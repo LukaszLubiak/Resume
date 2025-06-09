@@ -1,0 +1,25 @@
+.profile-img {
+  width: 150px;
+  border-radius: 50%;
+  border: 3px solid #555;
+}
+
+section {
+  margin-top: 30px;
+}
+
+footer {
+  padding-top: 20px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  padding-bottom: 40px;
+}
+
+.email-img {
+    width: 150px;
+}
