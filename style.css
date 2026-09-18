@@ -4,6 +4,9 @@
 
 html {
   scroll-behavior: smooth;
+
+  /* Offsets anchor jumps so headings are not hidden behind the fixed navbar.
+     This replaces the duplicate scroll-margin-top that was on "section". */
   scroll-padding-top: 85px;
 }
 
@@ -12,11 +15,19 @@ body {
   line-height: 1.7;
   color: #333;
   background-color: #ffffff;
-  padding-bottom: 0;
 }
 
-#top {
-  scroll-margin-top: 0;
+/* Respect users who have reduced-motion enabled */
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  * {
+    transition: none !important;
+  }
+
 }
 
 
@@ -38,7 +49,8 @@ body {
   transition: opacity 0.2s ease;
 }
 
-.navbar .nav-link:hover {
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
   opacity: 0.7;
 }
 
@@ -86,7 +98,6 @@ body {
 section {
   margin-top: 30px;
   margin-bottom: 40px;
-  scroll-margin-top: 85px;
 }
 
 section h2 {
@@ -120,38 +131,36 @@ li {
 
 /* =========================
    CARDS
+
+   The hover effect is triggered by the COLUMN, not by the card itself.
+
+   Why: Bootstrap's "g-4" gutter puts 1.5rem of padding on top of every
+   column. That padding belongs to the column, so hovering it would not
+   reach the card and the effect felt delayed. On top of that, moving the
+   card up by 4px pulled it out from under the cursor near its top edge,
+   which caused the card to flicker in and out of the hover state.
+
+   Hovering the column solves both problems: the column never moves, and
+   its gutter padding becomes part of the hover area.
 ========================= */
 
 .card {
   border: none;
   border-radius: 10px;
 
-  /* Make the entire card participate in mouse events */
-  pointer-events: auto;
-
-  /* Keep cards above surrounding content */
+  /* Needed so z-index applies while the card is raised on hover */
   position: relative;
-  z-index: 1;
 
-  /* Smooth hover animation */
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
 }
 
-.card:hover {
+.row > [class*="col-"]:hover .card,
+.row > [class*="col-"]:focus-within .card {
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
   z-index: 10;
-}
-
-
-/* Make sure the card body does not interfere with hover */
-
-.card-body {
-  position: relative;
-  z-index: 1;
-  pointer-events: auto;
 }
 
 .card-title {
@@ -193,10 +202,7 @@ li {
   transition: all 0.2s ease;
 }
 
-.btn-dark:hover {
-  transform: translateY(-1px);
-}
-
+.btn-dark:hover,
 .btn-outline-dark:hover {
   transform: translateY(-1px);
 }
@@ -222,7 +228,8 @@ li {
   text-decoration: none;
 }
 
-#contact a:hover {
+#contact a:hover,
+#contact a:focus {
   text-decoration: underline;
 }
 
@@ -238,9 +245,17 @@ footer {
 
 /* =========================
    TABLETS
+
+   Below 992px the brand moves onto its own line and the links wrap
+   underneath it, so the navbar becomes taller and the scroll offset
+   has to grow to match.
 ========================= */
 
 @media (max-width: 991px) {
+
+  html {
+    scroll-padding-top: 115px;
+  }
 
   .navbar .container {
     flex-direction: column;
@@ -250,11 +265,21 @@ footer {
 
   .navbar-brand {
     margin-bottom: 5px;
+    margin-right: 0;
+  }
+
+  .navbar .navbar-nav {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .navbar .nav-link {
     margin-left: 6px !important;
     margin-right: 6px !important;
+  }
+
+  .hero-section {
+    padding-top: 135px;
   }
 
   .hero-section h1 {
@@ -269,6 +294,10 @@ footer {
 ========================= */
 
 @media (max-width: 767px) {
+
+  html {
+    scroll-padding-top: 120px;
+  }
 
   body {
     font-size: 0.95rem;
@@ -296,7 +325,7 @@ footer {
   /* Hero */
 
   .hero-section {
-    padding-top: 100px;
+    padding-top: 140px;
     padding-bottom: 20px;
   }
 
@@ -323,7 +352,6 @@ footer {
   section {
     margin-top: 25px;
     margin-bottom: 30px;
-    scroll-margin-top: 85px;
   }
 
   section h2 {
@@ -350,19 +378,16 @@ footer {
   }
 
 
-  /* Cards */
-
-  .card {
-    margin-bottom: 5px;
-  }
-
-
   /* Buttons */
 
   .hero-section .btn {
     display: block;
     width: 100%;
     margin-bottom: 10px;
+  }
+
+  .hero-section .btn.me-2 {
+    margin-right: 0 !important;
   }
 
 }
@@ -374,9 +399,17 @@ footer {
 
 @media (max-width: 480px) {
 
+  html {
+    scroll-padding-top: 130px;
+  }
+
   .container {
     padding-left: 15px;
     padding-right: 15px;
+  }
+
+  .hero-section {
+    padding-top: 150px;
   }
 
   .profile-img {
@@ -406,6 +439,25 @@ footer {
 
   li {
     margin-bottom: 8px;
+  }
+
+}
+
+
+/* =========================
+   TOUCH DEVICES
+
+   On phones and tablets there is no real hover, so a tap can leave a card
+   stuck in the raised state. This turns the lift off where hover is not
+   available.
+========================= */
+
+@media (hover: none) {
+
+  .row > [class*="col-"]:hover .card {
+    transform: none;
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
+    z-index: 1;
   }
 
 }
