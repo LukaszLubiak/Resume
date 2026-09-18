@@ -5,6 +5,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 85px;
 }
 
 body {
@@ -13,6 +14,10 @@ body {
   color: #333;
   background-color: #ffffff;
   padding-bottom: 0;
+}
+
+#top {
+  scroll-margin-top: 0;
 }
 
 
@@ -114,18 +119,21 @@ li {
 
 
 /* =========================
-   SKILL CARDS
+   CARDS
 ========================= */
 
 .card {
   border: none;
   border-radius: 10px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+  z-index: 2;
 }
 
 .card-title {
